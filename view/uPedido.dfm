@@ -1,0 +1,227 @@
+inherited frmPedido: TfrmPedido
+  Caption = 'Pedido'
+  Position = poMainFormCenter
+  StyleElements = [seFont, seClient, seBorder]
+  TextHeight = 15
+  inherited lblBuscar: TLabel
+    StyleElements = [seFont, seClient, seBorder]
+  end
+  object lblCliente: TLabel [1]
+    Left = 4
+    Top = 251
+    Width = 37
+    Height = 15
+    Caption = 'Cliente'
+  end
+  object lblFecha: TLabel [2]
+    Left = 512
+    Top = 251
+    Width = 31
+    Height = 15
+    Caption = 'Fecha'
+  end
+  object lblPrecioTotal: TLabel [3]
+    Left = 867
+    Top = 251
+    Width = 62
+    Height = 15
+    Caption = 'Precio Total'
+  end
+  object lblEstado: TLabel [4]
+    Left = 641
+    Top = 251
+    Width = 35
+    Height = 15
+    Caption = 'Estado'
+  end
+  object lblProducto: TLabel [5]
+    Left = 6
+    Top = 619
+    Width = 49
+    Height = 15
+    Caption = 'Producto'
+  end
+  object lblCantidad: TLabel [6]
+    Left = 633
+    Top = 619
+    Width = 48
+    Height = 15
+    Caption = 'Cantidad'
+  end
+  object lblPrecio: TLabel [7]
+    Left = 893
+    Top = 619
+    Width = 33
+    Height = 15
+    Caption = 'Precio'
+  end
+  inherited mskBuscar: TMaskEdit
+    StyleElements = [seFont, seClient, seBorder]
+  end
+  inherited cboBuscar: TComboBox
+    StyleElements = [seFont, seClient, seBorder]
+  end
+  inherited pnlBotoesI: TPanel
+    StyleElements = [seFont, seClient, seBorder]
+  end
+  inherited grdItensPedido: TDBGrid
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'NOMBREPRODUCTO'
+        Title.Caption = 'Producto'
+        Width = 882
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'CANTIDAD'
+        Title.Alignment = taCenter
+        Title.Caption = 'Cantidad'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'PRECIO'
+        Title.Alignment = taCenter
+        Title.Caption = 'Precio'
+        Width = 72
+        Visible = True
+      end>
+  end
+  inherited pnlBotoesHijo: TPanel
+    StyleElements = [seFont, seClient, seBorder]
+    inherited btnAplicar: TBitBtn
+      OnClick = btnAplicarClick
+    end
+    inherited btnDeshacer: TBitBtn
+      OnClick = btnDeshacerClick
+    end
+  end
+  object lkpCliente: TDBLookupComboBox [13]
+    Left = 61
+    Top = 248
+    Width = 434
+    Height = 23
+    DataField = 'IDCLIENTE'
+    DataSource = dataSource
+    KeyField = 'ID'
+    ListField = 'NOMBRE'
+    ListSource = dsCliente
+    TabOrder = 5
+  end
+  object edtFecha: TDBEdit [14]
+    Left = 565
+    Top = 248
+    Width = 70
+    Height = 23
+    DataField = 'FECHA'
+    DataSource = dataSource
+    TabOrder = 6
+  end
+  object edtPrecioTotal: TDBEdit [15]
+    Left = 935
+    Top = 248
+    Width = 105
+    Height = 23
+    DataField = 'PRECIOTOTAL'
+    DataSource = dataSource
+    ReadOnly = True
+    TabOrder = 7
+  end
+  object cboEstado: TDBComboBox [16]
+    Left = 690
+    Top = 248
+    Width = 167
+    Height = 23
+    Style = csDropDownList
+    DataField = 'ESTADO'
+    DataSource = dataSource
+    Items.Strings = (
+      'ABIERTO'
+      'PARCIALMENTE CERRADO'
+      'CERRADO')
+    TabOrder = 8
+  end
+  object lkpProduto: TDBLookupComboBox [17]
+    Left = 61
+    Top = 616
+    Width = 434
+    Height = 23
+    DataField = 'IDPRODUCTO'
+    DataSource = DataSourceHijo
+    KeyField = 'ID'
+    ListField = 'NOMBREPRODUCTO'
+    ListSource = DataSourceHijo
+    TabOrder = 9
+    OnExit = lkpProdutoExit
+  end
+  object edtCantidad: TDBEdit [18]
+    Left = 690
+    Top = 616
+    Width = 81
+    Height = 23
+    DataField = 'CANTIDAD'
+    DataSource = DataSourceHijo
+    TabOrder = 10
+  end
+  object edtPrecio: TDBEdit [19]
+    Left = 935
+    Top = 616
+    Width = 105
+    Height = 23
+    DataField = 'PRECIO'
+    DataSource = DataSourceHijo
+    ReadOnly = True
+    TabOrder = 11
+  end
+  inherited grdPedido: TDBGrid
+    TabOrder = 12
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'NOMBRECLIENTE'
+        Title.Caption = 'Cliente'
+        Width = 741
+        Visible = True
+      end
+      item
+        Alignment = taCenter
+        Expanded = False
+        FieldName = 'FECHA'
+        Title.Alignment = taCenter
+        Title.Caption = 'Fecha'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'ESTADO'
+        Title.Caption = 'Estado'
+        Width = 163
+        Visible = True
+      end>
+  end
+  inherited dataSource: TDataSource
+    DataSet = DM.qryPedido
+    Top = 168
+  end
+  inherited lstImagensBotoes: TImageList
+    Left = 974
+    Top = 294
+  end
+  inherited DataSourceHijo: TDataSource
+    DataSet = DM.qryItensPedido
+    Left = 376
+    Top = 544
+  end
+  object dsCliente: TDataSource
+    DataSet = DM.qryCliente
+    Left = 424
+    Top = 240
+  end
+  object dsProducto: TDataSource
+    DataSet = DM.qryProducto
+    Left = 384
+    Top = 608
+  end
+end
