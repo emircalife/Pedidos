@@ -219,7 +219,6 @@ object DM: TDM
   end
   object qryItensPedido: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    BeforePost = qryItensPedidoBeforePost
     OnNewRecord = qryItensPedidoNewRecord
     CachedUpdates = True
     FilterChanges = [rtModified, rtInserted, rtUnmodified, rtHasErrors]

@@ -53,7 +53,6 @@ type
     procedure qryPedidoIDCLIENTEChange(Sender: TField);
     procedure qryItensPedidoIDPRODUCTOChange(Sender: TField);
     procedure qryItensPedidoNewRecord(DataSet: TDataSet);
-    procedure qryItensPedidoBeforePost(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -116,11 +115,6 @@ begin
   Conn.Params.Values['CharacterSet']  := 'UTF8';
 
   Conn.Connected  :=  True;
-end;
-
-procedure TDM.qryItensPedidoBeforePost(DataSet: TDataSet);
-begin
-//  qryItensPedido.FieldByName('IDPRODUCTO').AsInteger  := qryProducto.FieldByName('ID').AsInteger;
 end;
 
 procedure TDM.qryItensPedidoIDPRODUCTOChange(Sender: TField);
