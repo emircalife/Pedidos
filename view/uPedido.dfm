@@ -70,7 +70,7 @@ inherited frmPedido: TfrmPedido
         Expanded = False
         FieldName = 'NOMBREPRODUCTO'
         Title.Caption = 'Producto'
-        Width = 882
+        Width = 846
         Visible = True
       end
       item
@@ -78,6 +78,7 @@ inherited frmPedido: TfrmPedido
         FieldName = 'CANTIDAD'
         Title.Alignment = taCenter
         Title.Caption = 'Cantidad'
+        Width = 78
         Visible = True
       end
       item
@@ -124,10 +125,11 @@ inherited frmPedido: TfrmPedido
     Top = 248
     Width = 105
     Height = 23
+    TabStop = False
     DataField = 'PRECIOTOTAL'
     DataSource = dataSource
     ReadOnly = True
-    TabOrder = 7
+    TabOrder = 8
   end
   object cboEstado: TDBComboBox [16]
     Left = 690
@@ -141,7 +143,7 @@ inherited frmPedido: TfrmPedido
       'ABIERTO'
       'PARCIALMENTE CERRADO'
       'CERRADO')
-    TabOrder = 8
+    TabOrder = 7
   end
   object lkpProduto: TDBLookupComboBox [17]
     Left = 61
@@ -151,8 +153,8 @@ inherited frmPedido: TfrmPedido
     DataField = 'IDPRODUCTO'
     DataSource = DataSourceHijo
     KeyField = 'ID'
-    ListField = 'NOMBREPRODUCTO'
-    ListSource = DataSourceHijo
+    ListField = 'NOMBRE'
+    ListSource = dsProducto
     TabOrder = 9
     OnExit = lkpProdutoExit
   end
@@ -170,6 +172,7 @@ inherited frmPedido: TfrmPedido
     Top = 616
     Width = 105
     Height = 23
+    TabStop = False
     DataField = 'PRECIO'
     DataSource = DataSourceHijo
     ReadOnly = True
@@ -203,6 +206,7 @@ inherited frmPedido: TfrmPedido
   end
   inherited dataSource: TDataSource
     DataSet = DM.qryPedido
+    OnDataChange = dataSourceDataChange
     Top = 168
   end
   inherited lstImagensBotoes: TImageList

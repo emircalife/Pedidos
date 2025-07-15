@@ -16,6 +16,7 @@ object DM: TDM
       'ReadTimeout=10000'
       'WriteTimeout=10000'
       'DriverID=Ora')
+    ConnectedStoredUsage = [auDesignTime]
     Connected = True
     LoginPrompt = False
     Transaction = Trans
@@ -183,33 +184,43 @@ object DM: TDM
     object qryPedidoIDCLIENTE: TFMTBCDField
       FieldName = 'IDCLIENTE'
       Origin = 'IDCLIENTE'
+      ProviderFlags = [pfInUpdate]
+      OnChange = qryPedidoIDCLIENTEChange
       Precision = 38
       Size = 38
     end
     object qryPedidoFECHA: TDateTimeField
       FieldName = 'FECHA'
       Origin = 'FECHA'
+      ProviderFlags = [pfInUpdate]
+      EditMask = '!99/99/0000;1;_'
     end
     object qryPedidoESTADO: TWideStringField
       FieldName = 'ESTADO'
       Origin = 'ESTADO'
+      ProviderFlags = [pfInUpdate]
       Required = True
     end
     object qryPedidoPRECIOTOTAL: TBCDField
       FieldName = 'PRECIOTOTAL'
       Origin = 'PRECIOTOTAL'
+      ProviderFlags = [pfInUpdate]
+      currency = True
       Precision = 10
       Size = 2
     end
     object qryPedidoNOMBRECLIENTE: TWideStringField
       FieldName = 'NOMBRECLIENTE'
       Origin = 'NOMBRECLIENTE'
+      ProviderFlags = []
       Required = True
       Size = 255
     end
   end
   object qryItensPedido: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    BeforePost = qryItensPedidoBeforePost
+    OnNewRecord = qryItensPedidoNewRecord
     CachedUpdates = True
     FilterChanges = [rtModified, rtInserted, rtUnmodified, rtHasErrors]
     MasterSource = dsPedido
@@ -257,26 +268,33 @@ object DM: TDM
     end
     object qryItensPedidoIDPEDIDO: TFMTBCDField
       FieldName = 'IDPEDIDO'
+      ProviderFlags = [pfInUpdate]
       Precision = 38
       Size = 38
     end
     object qryItensPedidoIDPRODUCTO: TFMTBCDField
       FieldName = 'IDPRODUCTO'
+      ProviderFlags = [pfInUpdate]
+      OnChange = qryItensPedidoIDPRODUCTOChange
       Precision = 38
       Size = 38
     end
     object qryItensPedidoCANTIDAD: TFMTBCDField
       FieldName = 'CANTIDAD'
+      ProviderFlags = [pfInUpdate]
       Precision = 38
       Size = 0
     end
     object qryItensPedidoPRECIO: TBCDField
       FieldName = 'PRECIO'
+      ProviderFlags = [pfInUpdate]
+      currency = True
       Precision = 10
       Size = 2
     end
     object qryItensPedidoNOMBREPRODUCTO: TWideStringField
       FieldName = 'NOMBREPRODUCTO'
+      ProviderFlags = []
       Required = True
       Size = 255
     end

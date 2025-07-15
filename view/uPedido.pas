@@ -37,9 +37,10 @@ type
     procedure btnAplicarClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure btnDeshacerClick(Sender: TObject);
+    procedure dataSourceDataChange(Sender: TObject; Field: TField);
   private
     { Private declarations }
-    function getPrecioTotal(idPedido : Integer):Currency;
+    function getPrecioTotal(idPedido : Integer; enCache : Boolean):Currency;
 
   protected
     procedure DoShow; override;
@@ -60,8 +61,7 @@ procedure TfrmPedido.lkpProdutoExit(Sender: TObject);
 begin
   inherited;
 
-  if lkpProduto.KeyValue > 0 then
-    edtPrecio.Text := FormatFloat('#,0.00', DM.qryProducto.FieldByName('PRECIO').AsCurrency);
+  edtPrecio.Text := FormatFloat('#,0.00', DM.qryProducto.FieldByName('PRECIO').AsCurrency);
 end;
 
 procedure TfrmPedido.btnAplicarClick(Sender: TObject);
@@ -70,11 +70,16 @@ var
   precioTotal : Currency;
 begin
   try
+    edtPrecioTotal.Text :=  FormatFloat('#,0.00', getPrecioTotal(0, true));
+
     if DM.FDSchemaAdapter.UpdatesPending then
+    begin
       DM.FDSchemaAdapter.ApplyUpdates(0);
+      DM.FDSchemaAdapter.CommitUpdates;
+    end;
 
     idPedido    :=  dataSource.DataSet.FieldByName('ID').Value;
-    precioTotal :=  getPrecioTotal(idPedido);
+    precioTotal :=  getPrecioTotal(idPedido, false);
 
     edtPrecioTotal.Text :=  FormatFloat('#,0.00', precioTotal);
 
@@ -82,7 +87,7 @@ begin
   except
     on E: Exception do
     begin
-      DM.Conn.Rollback;
+      DM.FDSchemaAdapter.CancelUpdates;
       ShowMessage('Error al aplicar cambios: ' + E.Message);
     end;
   end;
@@ -100,7 +105,15 @@ begin
   end;
 end;
 
+procedure TfrmPedido.dataSourceDataChange(Sender: TObject; Field: TField);
+begin
+  inherited;
+
+  edtPrecioTotal.Text :=  FormatFloat('#,0.00', getPrecioTotal(0, true));
+end;
+
 procedure TfrmPedido.DoShow;
+
 begin
   DM.qryCliente.CachedUpdates := False;
   DM.qryCliente.Open();
@@ -119,7 +132,7 @@ begin
   DM.qryProducto.Close();
 end;
 
-function TfrmPedido.getPrecioTotal(idPedido : Integer):Currency;
+function TfrmPedido.getPrecioTotal(idPedido : Integer; enCache : Boolean):Currency;
 const
   cSQL : String = 'SELECT SUM(PRECIO_UNITARIO) AS PRECIO_TOTAL       '+
                   'FROM (                                            '+
@@ -128,24 +141,48 @@ const
                   '    WHERE IDPEDIDO = :PIDPEDIDO)                  ';
 var
   qryPrecioTotal : TFDQuery;
+  nPrecioTotal   : Currency;
 
 begin
-  try
-    qryPrecioTotal            := TFDQuery.Create(nil);
-    qryPrecioTotal.Connection := DM.Conn;
+  nPrecioTotal  := 0.00;
 
-    qryPrecioTotal.Close;
-    qryPrecioTotal.SQL.Clear;
-    qryPrecioTotal.SQL.Add(cSQL);
-    qryPrecioTotal.ParamByName('PIDPEDIDO').AsInteger :=  idPedido;
-    qryPrecioTotal.Open;
+  if enCache then
+  begin
+    TFDQuery(dataSourceHijo.DataSet).DisableControls;
+    TFDQuery(dataSourceHijo.DataSet).First;
 
-    Result := qryPrecioTotal.FieldByName('PRECIO_TOTAL').AsCurrency;
+    while not TFDQuery(dataSourceHijo.DataSet).Eof do
+    begin
+      nPrecioTotal  :=  nPrecioTotal + (TFDQuery(dataSourceHijo.DataSet).FieldByName('CANTIDAD').AsInteger *
+                                        TFDQuery(dataSourceHijo.DataSet).FieldByName('PRECIO').AsCurrency);
 
-    FreeAndNil(qryPrecioTotal);
-  except
-    Raise Exception.Create('Hubo un error en elcalculo de precio, ¡inténtelo de nuevo!');
+      TFDQuery(dataSourceHijo.DataSet).Next;
+    end;
+    TFDQuery(dataSourceHijo.DataSet).First;
+
+    TFDQuery(dataSourceHijo.DataSet).EnableControls;
+  end
+  else
+  begin
+    try
+      qryPrecioTotal            := TFDQuery.Create(nil);
+      qryPrecioTotal.Connection := DM.Conn;
+
+      qryPrecioTotal.Close;
+      qryPrecioTotal.SQL.Clear;
+      qryPrecioTotal.SQL.Add(cSQL);
+      qryPrecioTotal.ParamByName('PIDPEDIDO').AsInteger :=  idPedido;
+      qryPrecioTotal.Open;
+
+      nPrecioTotal := qryPrecioTotal.FieldByName('PRECIO_TOTAL').AsCurrency;
+
+      FreeAndNil(qryPrecioTotal);
+    except
+      Raise Exception.Create('Hubo un error en elcalculo de precio, ¡inténtelo de nuevo!');
+    end;
   end;
 
+  Result := nPrecioTotal;
 end;
+
 end.

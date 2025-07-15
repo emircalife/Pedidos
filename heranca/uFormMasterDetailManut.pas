@@ -135,8 +135,8 @@ procedure TfrmFormMasterDetailManut.DoShow;
 begin
   inherited;
 
-  TFDQuery(dataSource.DataSet).Open();
   TFDQuery(DataSourceHijo.DataSet).Open();
+  TFDQuery(dataSource.DataSet).Open();
 end;
 
 procedure TfrmFormMasterDetailManut.FormCloseQuery(Sender: TObject;

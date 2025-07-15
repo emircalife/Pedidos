@@ -52,6 +52,8 @@ type
     procedure DataModuleCreate(Sender: TObject);
     procedure qryPedidoIDCLIENTEChange(Sender: TField);
     procedure qryItensPedidoIDPRODUCTOChange(Sender: TField);
+    procedure qryItensPedidoNewRecord(DataSet: TDataSet);
+    procedure qryItensPedidoBeforePost(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -116,9 +118,19 @@ begin
   Conn.Connected  :=  True;
 end;
 
+procedure TDM.qryItensPedidoBeforePost(DataSet: TDataSet);
+begin
+//  qryItensPedido.FieldByName('IDPRODUCTO').AsInteger  := qryProducto.FieldByName('ID').AsInteger;
+end;
+
 procedure TDM.qryItensPedidoIDPRODUCTOChange(Sender: TField);
 begin
   Sender.DataSet.FieldByName('NOMBREPRODUCTO').AsString := qryProductoNOMBRE.AsString;
+end;
+
+procedure TDM.qryItensPedidoNewRecord(DataSet: TDataSet);
+begin
+  qryItensPedido.FieldByName('IDPEDIDO').AsInteger  :=  qryPedido.FieldByName('ID').AsInteger;
 end;
 
 procedure TDM.qryPedidoIDCLIENTEChange(Sender: TField);
